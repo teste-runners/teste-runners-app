@@ -1,0 +1,26 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: teste-runners-nebula-runners
+  namespace: argocd
+  labels:
+    env: alpha
+    region: euc1
+spec:
+  destination:
+    namespace: teste-runners
+    server: https://api.vivid-owl.gher.shoot.genfood.caas.oneweb.mercedes-benz.io
+  project: dh-io-nebula-alpha
+  source:
+    repoURL: harbor.euc1.cicd.oneweb.mercedes-benz.com/nebula
+    chart: nebula-gh-runners-chart
+    targetRevision: 1.0.0
+    plugin:
+      name: argocd-vault-plugin-helm
+      env:
+      - name: HELM_VALUES
+        value: "organization: \\n  name: teste-runners \\n region: \\n  name: euc1 \ninstallation_id: 27521015 \nprivate_key: <path:gh-runners-app-config#PRIVATE_KEY>"
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
